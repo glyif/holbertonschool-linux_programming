@@ -9,4 +9,4 @@
 
 char *_getline(const int fd);
 
-#endif //INC_0X01_GETLINE_GETLINE_H
+#endif

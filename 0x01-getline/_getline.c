@@ -9,12 +9,12 @@
  */
 char *mem_reset(char *buff, int bytes)
 {
-    int i = 0;
+	int i = 0;
 
-    while (i < bytes)
-        buff[i++] = '\0';
+	while (i < bytes)
+		buff[i++] = '\0';
 
-    return (buff);
+	return (buff);
 }
 
 /**
@@ -27,40 +27,40 @@ char *mem_reset(char *buff, int bytes)
  */
 void *_realloc(void *buff, unsigned int buff_size, unsigned int new_size)
 {
-    char *p;
-    unsigned int i;
+	char *p;
+	unsigned int i;
 
-    if (buff == NULL)
-    {
-        p = malloc(new_size);
-        if (p == NULL)
-            return NULL;
-        p = mem_reset(p, new_size);
-        return (p);
-    }
+	if (buff == NULL)
+	{
+		p = malloc(new_size);
+		if (p == NULL)
+			return NULL;
+		p = mem_reset(p, new_size);
+		return (p);
+	}
 
-    if (new_size == 0)
-    {
-        free(buff);
-        return (NULL);
-    }
+	if (new_size == 0)
+	{
+		free(buff);
+		return (NULL);
+	}
 
-    if (buff_size == new_size)
-        return (buff);
+	if (buff_size == new_size)
+		return (buff);
 
-    p = malloc(new_size);
+	p = malloc(new_size);
 
-    if (p == NULL)
-        return (NULL);
+	if (p == NULL)
+		return (NULL);
 
-    p = mem_reset(p, new_size);
+	p = mem_reset(p, new_size);
 
-    for (i = 0; i < buff_size && i < new_size; i++)
-        p[i] = ((char *)buff)[i];
+	for (i = 0; i < buff_size && i < new_size; i++)
+		p[i] = ((char *)buff)[i];
 
-    free(buff);
+	free(buff);
 
-    return (p);
+	return (p);
 }
 
 /**
@@ -74,32 +74,32 @@ void *_realloc(void *buff, unsigned int buff_size, unsigned int new_size)
  */
 ssize_t _read(int fd, char **buffer, size_t limit)
 {
-    unsigned int i, j;
-    size_t charcount, iterations;
+	unsigned int i, j;
+	size_t charcount, iterations;
 
 
-    charcount = 0;
-    iterations = 1;
-    j = 0;
-    i = -1;
+	charcount = 0;
+	iterations = 1;
+	j = 0;
+	i = -1;
 
-    while (i != 0)
-    {
-        i = read(fd, (*buffer + j), limit);
+	while (i != 0)
+	{
+		i = read(fd, (*buffer + j), limit);
 
-        if (i <= 0)
-            continue;
+		if (i <= 0)
+			continue;
 
-        charcount += i;
-        j += i;
+		charcount += i;
+		j += i;
 
-        if (charcount % limit == 0)
-        {
-            iterations++;
-            *buffer = _realloc(*buffer, charcount, (limit * iterations));
-        }
-    }
-    return ((ssize_t)charcount);
+		if (charcount % limit == 0)
+		{
+			iterations++;
+			*buffer = _realloc(*buffer, charcount, (limit * iterations));
+		}
+	}
+	return ((ssize_t)charcount);
 }
 
 /**
@@ -110,23 +110,23 @@ ssize_t _read(int fd, char **buffer, size_t limit)
  */
 char *_getline(const int fd)
 {
-    static char *buffer;
+	static char *buffer;
 
-    buffer = malloc(BUFSIZE);
+	buffer = malloc(BUFSIZE);
 
-    ssize_t count;
+	ssize_t count;
 
-    count = _read(fd, &buffer, READ_SIZE);
+	count = _read(fd, &buffer, READ_SIZE);
 
-    if (count == 0)
-    {
-        free(buffer);
-        return NULL;
-    }
+	if (count == 0)
+	{
+		free(buffer);
+		return NULL;
+	}
 
-    if (buffer[count - 1] == '\n') {
-        buffer[count - 1] = '\0';
-    }
+	if (buffer[count - 1] == '\n') {
+		buffer[count - 1] = '\0';
+	}
 
-    return (buffer);
+	return (buffer);
 }
