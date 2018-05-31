@@ -111,10 +111,9 @@ ssize_t _read(int fd, char **buffer, size_t limit)
 char *_getline(const int fd)
 {
 	static char *buffer;
+	ssize_t count;
 
 	buffer = malloc(BUFSIZE);
-
-	ssize_t count;
 
 	count = _read(fd, &buffer, READ_SIZE);
 
