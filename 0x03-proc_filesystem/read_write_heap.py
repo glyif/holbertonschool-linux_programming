@@ -18,6 +18,8 @@ class SearchReplaceHeap:
         self.pid = pid
         self.search_string = bytes(search_string, "ASCII")
         self.replace_string = bytes(replace_string, "ASCII")
+        self.null_bytes = bytes('\0' * (len(self.search_string) -
+                                        len(self.replace_string)), "ASCII")
         self.start_address = ""
         self.end_address = ""
 
@@ -56,7 +58,7 @@ class SearchReplaceHeap:
         found_string = heap.index(self.search_string)
 
         mem_file.seek(self.start_address + found_string)
-        mem_file.write(self.replace_string)
+        mem_file.write(self.replace_string + self.null_bytes)
         mem_file.close()
 
     @staticmethod
