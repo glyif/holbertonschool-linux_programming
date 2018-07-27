@@ -88,44 +88,46 @@ void print_sh_flags(uint8_t class, uint64_t flags)
 	printf("%3s", fstr);
 }
 
-/* Prints the section header name at position n in the string table */
-void print_sh_name(uint16_t n, Elf_Ehdr *header, int class, FILE *file)
+/* Obtains the section header name at position n in the string table */
+void get_sh_name(uint16_t n, Elf_Ehdr *header, int class, FILE *file,
+				char *name)
 {
 	uint64_t strpos;
 	char c;
-	char name[100];
 	int pos;
 	Elf_Shdr sheader;
 
 	if (class == ELFCLASS32)
-		strpos = I32(header->e_shoff) + header->e_shstrndx * header->e_shentsize; /* calculate position of strtable section*/
+		/* calculate position of strtable section*/
+		strpos = I32(header->e_shoff) +
+					header->e_shstrndx * header->e_shentsize;
 	else
-		strpos = I64(header->e_shoff) + header->e_shstrndx * header->e_shentsize; /* calculate position of strtable section*/
-	fseek(file, strpos, SEEK_SET); /* position pointer at start of string table section header */
-	load_sh_header(&sheader, class, file); /* read strtable section header */
-
-	if (header->e_ident[EI_DATA] == ELFDATA2MSB)
-	{
-		sh_header_to_little(class, &sheader);  /* convert fields to little endian*/
-	}
+		/* calculate position of strtable section*/
+		strpos = I64(header->e_shoff) +
+					header->e_shstrndx * header->e_shentsize;
+	/* position pointer at start of string table section header */
+	fseek(file, strpos, SEEK_SET);
+	/* read strtable section header */
+	load_sh_header(&sheader, class, header->e_ident[EI_DATA], file);
 
 	if (class == ELFCLASS32)
-		fseek(file, I32(sheader.sh_offset) + n, SEEK_SET); /* position pointer at start of string */
+		/* position pointer at start of string */
+		fseek(file, I32(sheader.sh_offset) + n, SEEK_SET);
 	else
-		fseek(file, I64(sheader.sh_offset) + n, SEEK_SET); /* position pointer at start of string */
+		/* position pointer at start of string */
+		fseek(file, I64(sheader.sh_offset) + n, SEEK_SET);
 	pos = 0;
-
 	do {
 		c = fgetc(file); /* get a string char */
 		name[pos++] = c;
 	} while (c != 0);   /* while not end of string*/
-
-	printf(" %-17s", name);
 }
 
-/* loads an Elf section header from the file and saves it in the generic Elf
-section header structure hdr, the file is assumed to be in the given class */
-void load_sh_header(Elf_Shdr *hdr, uint8_t class, FILE *file)
+/**
+ *	loads an Elf section header from the file and saves it in the generic Elf
+ *	section header structure hdr, the file is assumed to be in the given class
+ */
+void load_sh_header(Elf_Shdr *hdr, uint8_t class, uint8_t data, FILE *file)
 {
 	Elf32_Shdr *ptr32;
 	Elf64_Shdr *ptr64;
@@ -145,7 +147,7 @@ void load_sh_header(Elf_Shdr *hdr, uint8_t class, FILE *file)
 		hdr->sh_addralign = &(ptr32->sh_addralign);
 		hdr->sh_entsize = &(ptr32->sh_entsize);
 	}
-	else /*if(class==ELFCLASS64)*/
+	else /*if (class == ELFCLASS64)*/
 	{
 		fread(hdr->data, sizeof(Elf64_Shdr), 1, file);   /* read the header */
 		ptr64 = (Elf64_Shdr *)(hdr->data);
@@ -160,12 +162,16 @@ void load_sh_header(Elf_Shdr *hdr, uint8_t class, FILE *file)
 		hdr->sh_addralign = &(ptr64->sh_addralign);
 		hdr->sh_entsize = &(ptr64->sh_entsize);
 	}
+	if (data == ELFDATA2MSB)
+		/* convert all fields to little endian*/
+		sh_header_to_little(class, hdr);
 }
 
 /* convert all fields in the section header structure to little endian */
 void sh_header_to_little(uint8_t class, Elf_Shdr *sheader)
 {
-	big_to_little((void *)&sheader->sh_name, 32); /* convert all fields to little endian*/
+	/* convert all fields to little endian*/
+	big_to_little((void *)&sheader->sh_name, 32);
 	big_to_little((void *)&sheader->sh_type, 32);
 	big_to_little((void *)&sheader->sh_link, 32);
 	big_to_little((void *)&sheader->sh_info, 32);

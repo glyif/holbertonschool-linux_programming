@@ -1,6 +1,9 @@
 #include "elf_utils.h"
 
-/* converts the number pointed by *num from big endian to little endian and updates it, uses the given size in bits */
+/**
+ *	converts the number pointed by *num from big endian to little endian and
+ *	updates it, uses the given size in bits
+ */
 void big_to_little(void *num, int size)
 {
 	uint8_t *p;
@@ -31,8 +34,10 @@ char *translate(int id, translation_table_t *ttable)
 	return (ttable[i].name);
 }
 
-/* loads an Elf header from the file and saves it in the generic Elf header
- structure hdr, the file is assumed to be in the given class */
+/**
+ *	loads an Elf header from the file and saves it in the generic Elf header
+ *	structure hdr, the file is assumed to be in the given class
+ */
 void load_header(Elf_Ehdr *hdr, uint8_t class, FILE *file)
 {
 	Elf32_Ehdr *ptr32;
@@ -76,12 +81,16 @@ void load_header(Elf_Ehdr *hdr, uint8_t class, FILE *file)
 		hdr->e_shnum = ptr64->e_shnum;
 		hdr->e_shstrndx = ptr64->e_shstrndx;
 	}
+	if (hdr->e_ident[EI_DATA] == ELFDATA2MSB)
+		/* convert all fields to little endian*/
+		header_to_little(hdr);
 }
 
 /* convert all fields in the header structure to little endian */
 void header_to_little(Elf_Ehdr *header)
 {
-	big_to_little((void *)&header->e_type, 16); /* convert all fields to little endian*/
+	/* convert all fields to little endian*/
+	big_to_little((void *)&header->e_type, 16);
 	big_to_little((void *)&header->e_machine, 16);
 	big_to_little((void *)&header->e_version, 32);
 	if (header->e_ident[EI_CLASS] == ELFCLASS32)

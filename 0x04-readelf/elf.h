@@ -294,6 +294,67 @@
 #define SHF_MASKOS				0x0ff00000
 #define SHF_MASKPROC			0xf0000000
 
+#define PT_NULL				0
+#define PT_LOAD				1
+#define PT_DYNAMIC			2
+#define PT_INTERP			3
+#define PT_NOTE				4
+#define PT_SHLIB			5
+#define PT_PHDR				6
+#define PT_TLS				7
+#define	PT_NUM				8
+#define PT_LOOS				0x60000000
+#define PT_GNU_EH_FRAME		0x6474e550
+#define PT_GNU_STACK		0x6474e551
+#define PT_GNU_RELRO		0x6474e552
+#define PT_LOSUNW			0x6ffffffa
+#define PT_SUNWBSS			0x6ffffffa
+#define PT_SUNWSTACK		0x6ffffffb
+#define PT_HIOS				0x6fffffff
+#define PT_LOPROC			0x70000000
+#define PT_HIPROC			0x7fffffff
+
+#define PF_X				1
+#define PF_W				2
+#define PF_R				4
+#define PF_MASKOS			0x0ff00000
+#define PF_MASKPROC			0xf0000000
+
+#define STT_NOTYPE			0
+#define STT_OBJECT			1
+#define STT_FUNC			2
+#define STT_SECTION			3
+#define STT_FILE			4
+#define STT_COMMON			5
+#define STT_LOOS			10
+#define STT_HIOS			12
+#define STT_LOPROC			13
+#define STT_HIPROC			15
+
+#define STB_LOCAL			0
+#define STB_GLOBAL			1
+#define STB_WEAK			2
+#define STB_LOOS			10
+#define STB_HIOS			12
+#define STB_LOPROC			13
+#define STB_HIPROC			15
+
+#define STV_DEFAULT			0
+#define STV_INTERNAL		1
+#define STV_HIDDEN			2
+#define STV_PROTECTED		3
+
+#define SHN_UNDEF			0
+#define SHN_LORESERVE		0xff00
+#define SHN_LOPROC			0xff00
+#define SHN_HIPROC			0xff1f
+#define SHN_LOOS			0xff20
+#define SHN_HIOS			0xff3f
+#define SHN_ABS				0xfff1
+#define SHN_COMMON			0xfff2
+#define SHN_XINDEX			0xffff
+#define SHN_HIRESERVE		0xffff
+
 /**
  * Elf32_Ehdr - elf32 header struct
  * @e_ident" indent
@@ -426,9 +487,98 @@ typedef struct
 	uint8_t		data[64];
 } Elf_Shdr;
 
+typedef struct
+{
+	uint32_t	p_type;
+	uint32_t	p_offset;
+	uint32_t	p_vaddr;
+	uint32_t	p_paddr;
+	uint32_t	p_filesz;
+	uint32_t	p_memsz;
+	uint32_t	p_flags;
+	uint32_t	p_align;
+} Elf32_Phdr;
+
+typedef struct
+{
+	uint32_t	p_type;
+	uint32_t	p_flags;
+	uint64_t	p_offset;
+	uint64_t	p_vaddr;
+	uint64_t	p_paddr;
+	uint64_t	p_filesz;
+	uint64_t	p_memsz;
+	uint64_t	p_align;
+} Elf64_Phdr;
+
+typedef struct
+{
+	uint32_t	p_type;
+	void		*p_offset;
+	void		*p_vaddr;
+	void		*p_paddr;
+	void		*p_filesz;
+	void		*p_memsz;
+	uint32_t	p_flags;
+	void		*p_align;
+	uint8_t		data[64];
+} Elf_Phdr;
+
+typedef struct
+{
+	uint32_t	st_name;
+	uint32_t	st_value;
+	uint32_t	st_size;
+	uint8_t		st_info;
+	uint8_t		st_other;
+	uint16_t	st_shndx;
+} Elf32_Sym;
+
+typedef struct
+{
+	uint32_t	st_name;
+	uint8_t		st_info;
+	uint8_t		st_other;
+	uint16_t	st_shndx;
+	uint64_t	st_value;
+	uint64_t	st_size;
+} Elf64_Sym;
+
+typedef struct
+{
+	uint32_t	st_name;
+	void		*st_value;
+	void		*st_size;
+	uint8_t		st_info;
+	uint8_t		st_other;
+	uint16_t	st_shndx;
+	uint8_t		data[32];
+} Elf_Sym;
+
+typedef struct
+{
+	uint16_t	vn_version;
+	uint16_t	vn_cnt;
+	uint32_t	vn_file;
+	uint32_t	vn_aux;
+	uint32_t	vn_next;
+} Elf_Verneed;
+
+typedef struct
+{
+	uint32_t	vna_hash;
+	uint16_t	vna_flags;
+	uint16_t	vna_other;
+	uint32_t	vna_name;
+	uint32_t	vna_next;
+} Elf_Vernaux;
+
 #define I32(X) ((uint32_t *)(X))[0]
 #define I64(X) ((uint64_t *)(X))[0]
 
+#define ST_BIND(i)   ((i) >> 4)
+#define ST_TYPE(i)   ((i) & 0xf)
+#define ST_VISIBILITY(o) ((o) & 0x3)
 
 #define MAX_NAME_LEN	100
 typedef struct
@@ -437,5 +587,4 @@ typedef struct
 	char	name[MAX_NAME_LEN];
 } translation_table_t;
 
-#endif /* ELF_H */
-
+#endif
