@@ -587,4 +587,5 @@ typedef struct
 	char	name[MAX_NAME_LEN];
 } translation_table_t;
 
-#endif
+#endif /* ELF_H */
+

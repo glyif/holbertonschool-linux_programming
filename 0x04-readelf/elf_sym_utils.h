@@ -11,4 +11,5 @@ void load_sym_entry(Elf_Sym *sym, uint8_t class, uint8_t data, FILE *file);
 void get_sym_name(uint32_t n, Elf_Shdr *sheader, Elf_Ehdr *header, FILE *file,
 				char *name);
 
-#endif
+#endif /* ELF_SYM_UTILS_H */
+

@@ -13,6 +13,8 @@
  */
 void print_section_header(uint16_t n, Elf_Ehdr *header, int class, FILE *file)
 {
+	char name[MAX_NAME_LEN];
+
 	translation_table_t sh_type_ttable[] = {
 		{SHT_NULL, "NULL"},
 		{SHT_PROGBITS, "PROGBITS"},
@@ -47,15 +49,19 @@ void print_section_header(uint16_t n, Elf_Ehdr *header, int class, FILE *file)
 	Elf_Shdr sheader;
 
 	if (class == ELFCLASS32)
-		shposition = I32(header->e_shoff) + n * header->e_shentsize; /* calculate position of section n*/
+		/* calculate position of section n*/
+		shposition = I32(header->e_shoff) + n * header->e_shentsize;
 	else
-		shposition = I64(header->e_shoff) + n * header->e_shentsize; /* calculate position of section n*/
+		/* calculate position of section n*/
+		shposition = I64(header->e_shoff) + n * header->e_shentsize;
 
-	fseek(file, shposition, SEEK_SET); /* position pointer at start of section header */
-	load_sh_header(&sheader, header->e_ident[EI_CLASS], file); /* read section header */
-	if (header->e_ident[EI_DATA] == ELFDATA2MSB)
-		sh_header_to_little(class, &sheader);  /* convert all fields to little endian*/
-	print_sh_name(sheader.sh_name, header, class, file);
+	/* position pointer at start of section header */
+	fseek(file, shposition, SEEK_SET);
+	/* read section header */
+	load_sh_header(&sheader, header->e_ident[EI_CLASS],
+				header->e_ident[EI_DATA], file);
+	get_sh_name(sheader.sh_name, header, class, file, name);
+	printf(" %-17s", name);
 	printf(" %-16s", translate(sheader.sh_type, sh_type_ttable));
 
 	if (class == ELFCLASS32)
@@ -95,11 +101,6 @@ void print_section_info(uint8_t class, FILE *file)
 
 	/* read the header */
 	load_header(&header, class, file);
-	if (header.e_ident[EI_DATA] == ELFDATA2MSB)
-	{
-		/* convert all fields to little endian*/
-		header_to_little(&header);
-	}
 	printf("There are %d section headers, starting at offset ", header.e_shnum);
 
 	if (class == ELFCLASS32)
@@ -128,8 +129,10 @@ void print_section_info(uint8_t class, FILE *file)
 		printf(", l (large)");
 
 	printf("\n");
-	printf("  I (info), L (link order), G (group), T (TLS), E (exclude), x (unknown)\n");
-	printf("  O (extra OS processing required) o (OS specific), p (processor specific)\n");
+	printf("  I (info), L (link order), G (group), T (TLS), E (exclude)");
+	printf(", x (unknown)\n");
+	printf("  O (extra OS processing required) o (OS specific)");
+	printf(", p (processor specific)\n");
 }
 
 /**
@@ -166,8 +169,8 @@ int main(int argc, char **argv)
 	if (ident[EI_MAG0] != ELFMAG0 || ident[EI_MAG1] != ELFMAG1 ||
 		ident[EI_MAG2] != ELFMAG2 || ident[EI_MAG3] != ELFMAG3)
 	{
-		fprintf(stderr, "1-hreadelf: Error: Not an ELF file - it has the wrong"
-					   " magic bytes at the start\n");
+		fprintf(stderr, "1-hreadelf: Error: Not an ELF file");
+		fprintf(stderr, " - it has the wrong magic bytes at the start\n");
 		fclose(file);
 		exit(1);
 	}

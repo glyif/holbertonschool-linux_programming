@@ -13,5 +13,5 @@ all:	0-hreadelf 1-hreadelf 2-hreadelf 100-hreadelf
 		gcc -Wall -Werror -Wextra -pedantic -o 100-hreadelf 100-hreadelf.c elf_utils.c elf_sh_utils.c elf_sym_utils.c elf_ver_utils.c
 
 clean:
-		rm -f *.o 2-hreadelf 100-hreadelf
+		rm -f *.o 0-hreadelf 1-hreadelf 2-hreadelf 100-hreadelf
 

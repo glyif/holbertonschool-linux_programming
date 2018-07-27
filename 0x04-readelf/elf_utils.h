@@ -9,5 +9,5 @@ char *translate(int id, translation_table_t *ttable);
 void load_header(Elf_Ehdr *hdr, uint8_t class, FILE *file);
 void header_to_little(Elf_Ehdr *header);
 
-#endif
+#endif /* ELF_UTILS_H */
 

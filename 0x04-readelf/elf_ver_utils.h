@@ -8,4 +8,5 @@
 void load_verneed(Elf_Verneed *hdr, uint8_t data, FILE *file);
 void load_vernaux(Elf_Vernaux *hdr, uint8_t data, FILE *file);
 
-#endif
+#endif /* ELF_VER_UTILS_H */
+

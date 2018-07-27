@@ -126,7 +126,7 @@ void print_header_info(uint8_t class, FILE *file)
 		{EM_MN10200, "Matsushita MN10200"},
 		{EM_PJ, "picoJava"},
 		{EM_OPENRISC, "OpenRISC 32-bit embedded processor"},
-		{EM_ARC_COMPACT, "ARC International ARCompact processor (old spelling/synonym: EM_ARC_A5)"},
+		{EM_ARC_COMPACT, "ARC International ARCompact processor"},
 		{EM_XTENSA, "Tensilica Xtensa Architecture"},
 		{EM_VIDEOCORE, "Alphamosaic VideoCore processor"},
 		{EM_TMM_GPP, "Thompson Multimedia General Purpose Processor"},
@@ -143,7 +143,7 @@ void print_header_info(uint8_t class, FILE *file)
 		{EM_SE_C33, "S1C33 Family of Seiko Epson processors"},
 		{EM_SEP, "Sharp embedded microprocessor"},
 		{EM_ARCA, "Arca RISC Microprocessor"},
-		{EM_UNICORE, "Microprocessor series from PKU-Unity Ltd. and MPRC of Peking University"},
+		{EM_UNICORE, "Microprocessor series from PKU-Unity Ltd."},
 		{EM_EXCESS, "eXcess: 16/32/64-bit configurable embedded CPU"},
 		{EM_DXP, "Icera Semiconductor Inc. Deep Execution Processor"},
 		{EM_ALTERA_NIOS2, "Altera Nios II soft-core processor"},
@@ -151,7 +151,7 @@ void print_header_info(uint8_t class, FILE *file)
 		{EM_XGATE, "Motorola XGATE embedded processor"},
 		{EM_C166, "Infineon C16x/XC16x processor"},
 		{EM_M16C, "Renesas M16C series microprocessors"},
-		{EM_DSPIC30F, "Microchip Technology dsPIC30F Digital Signal Controller"},
+		{EM_DSPIC30F, "Microchip Technology dsPIC30F DSC"},
 		{EM_CE, "Freescale Communication Engine RISC core"},
 		{EM_M32C, "Renesas M32C series microprocessors"},
 		{EM_TSK3000, "Altium TSK3000 core"},
@@ -166,7 +166,7 @@ void print_header_info(uint8_t class, FILE *file)
 		{EM_TI_C6000, "The Texas Instruments TMS320C6000 DSP family"},
 		{EM_TI_C2000, "The Texas Instruments TMS320C2000 DSP family"},
 		{EM_TI_C5500, "The Texas Instruments TMS320C55x DSP family"},
-		{EM_TI_ARP32, "Texas Instruments Application Specific RISC Processor, 32bit fetch"},
+		{EM_TI_ARP32, "Texas Instruments Application Specific RISC Processor"},
 		{EM_TI_PRU, "Texas Instruments Programmable Realtime Unit"},
 		{EM_MMDSP_PLUS, "STMicroelectronics 64bit VLIW Data Signal Processor"},
 		{EM_CYPRESS_M8C, "Cypress M8C microprocessor"},
@@ -174,8 +174,8 @@ void print_header_info(uint8_t class, FILE *file)
 		{EM_TRIMEDIA, "NXP Semiconductors TriMedia architecture family"},
 		{EM_QDSP6, "QUALCOMM DSP6 Processor"},
 		{EM_8051, "Intel 8051 and variants"},
-		{EM_STXP7X, "STMicroelectronics STxP7x family of configurable and extensible RISC processors"},
-		{EM_NDS32, "Andes Technology compact code size embedded RISC processor family"},
+		{EM_STXP7X, "STMicroelectronics STxP7x"},
+		{EM_NDS32, "Andes Technology embedded RISC processor"},
 		{EM_ECOG1, "Cyan Technology eCOG1X family"},
 		{EM_MAXQ30, "Dallas Semiconductor MAXQ30 Core Micro-controllers"},
 		{EM_XIMO16, "New Japan Radio (NJR) 16-bit DSP Processor"},
@@ -185,7 +185,7 @@ void print_header_info(uint8_t class, FILE *file)
 		{EM_METAG, "Imagination Technologies META processor architecture"},
 		{EM_MCST_ELBRUS, "MCST Elbrus general purpose hardware architecture"},
 		{EM_ECOG16, "Cyan Technology eCOG16 family"},
-		{EM_CR16, "National Semiconductor CompactRISC CR16 16-bit microprocessor"},
+		{EM_CR16, "National Semiconductor CompactRISC CR16"},
 		{EM_ETPU, "Freescale Extended Time Processing Unit"},
 		{EM_SLE9X, "Infineon Technologies SLE9X core"},
 		{EM_L10M, "Intel L10M"},
@@ -259,7 +259,6 @@ void print_header_info(uint8_t class, FILE *file)
 	else if (header.e_ident[EI_DATA] == ELFDATA2MSB)
 	{
 		printf("big endian\n");
-		header_to_little(&header); /* convert all fields to little endian*/
 	}
 	else
 	{
@@ -354,8 +353,8 @@ int main(int argc, char **argv)
 	if (ident[EI_MAG0] != ELFMAG0 || ident[EI_MAG1] != ELFMAG1 ||
 		ident[EI_MAG2] != ELFMAG2 || ident[EI_MAG3] != ELFMAG3)
 	{
-		fprintf(stderr, "0-hreadelf: Error: Not an ELF file - it has the wrong"
-			" magic bytes at the start\n");
+		fprintf(stderr, "0-hreadelf: Error: Not an ELF file");
+		fprintf(stderr, " - it has the wrong magic bytes at the start\n");
 		fclose(file);
 		exit(1);
 	}

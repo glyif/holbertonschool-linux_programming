@@ -11,4 +11,5 @@ void load_sh_header(Elf_Shdr *hdr, uint8_t class, uint8_t data, FILE *file);
 void get_sh_name(uint16_t n, Elf_Ehdr *header, int class, FILE *file,
 				char *name);
 
-#endif
+#endif /* ELF_SH_UTILS_H */
+
